@@ -1,4 +1,5 @@
 import FilterDrawer from '@/components/filters/drawer';
+import SearchError from '@/components/search/error';
 import SearchInput from '@/components/search/input';
 import { Stack } from '@chakra-ui/react';
 
@@ -6,6 +7,7 @@ function App() {
   return (
     <Stack p={4} bg={'gray.100'} w={'vw'} h={'vh'}>
       <FilterDrawer />
+      <SearchError />
       <SearchInput />
     </Stack>
   );

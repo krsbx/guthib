@@ -8,10 +8,19 @@ import { useForm } from 'react-hook-form';
 import { FaFilter, FaSearch } from 'react-icons/fa';
 import { Form } from '../ui/form';
 import { SortBy } from '@/utils/constants';
+import { RequestError } from 'octokit';
 
 function SearchInput() {
-  const { isFilterOpen, toggleFilter, isSearching, setIsSearching, filters } =
-    useSearchStore();
+  const {
+    isFilterOpen,
+    toggleFilter,
+    isSearching,
+    setIsSearching,
+    filters,
+    setUsers,
+    setIsSearchError,
+    setSearchError,
+  } = useSearchStore();
   const { register, handleSubmit, formState } = useForm<SearchSchema>({
     defaultValues: {
       username: '',
@@ -35,14 +44,29 @@ function SearchInput() {
       });
 
       if (response.isSuccess) {
-        console.log(response.data);
+        setUsers(response.data.items);
       } else {
-        console.log(response.error);
+        setIsSearchError(true);
+
+        if (response.error instanceof RequestError) {
+          setSearchError(response.error.message);
+        } else if (response.error instanceof Error) {
+          setSearchError(response.error.message);
+        } else {
+          setSearchError('Something went wrong');
+        }
       }
 
       setIsSearching(false);
     },
-    [isSearching, setIsSearching, filters]
+    [
+      isSearching,
+      setIsSearching,
+      filters,
+      setUsers,
+      setIsSearchError,
+      setSearchError,
+    ]
   );
 
   return (
