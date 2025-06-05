@@ -27,7 +27,7 @@ jobs:
       - name: setup env file
         run: |
           touch .env
-          echo "VITE_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
+          echo "VITE_GITHUB_TOKEN=${{ secrets.VITE_GITHUB_TOKEN }}" >> .env
 
       - name: Install dependencies
         run: pnpm install
