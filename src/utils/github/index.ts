@@ -21,7 +21,9 @@ export class Github {
 
   public static get instance(): Github {
     if (!Github._instance) {
-      Github._instance = new Github(import.meta.env.VITE_GITHUB_TOKEN);
+      Github._instance = new Github(
+        import.meta.env.VITE_GITHUB_TOKEN as string
+      );
     }
 
     return Github._instance;
