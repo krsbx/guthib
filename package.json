@@ -11,15 +11,16 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.19.2",
+    "@emotion/react": "^11.14.0",
     "@generouted/react-router": "^1.20.0",
-    "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "classnames": "^2.5.1",
+    "next-themes": "^0.4.6",
     "octokit": "^5.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
-    "tailwindcss": "^4.1.8",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
@@ -38,7 +39,8 @@
     "prettier": "^3.5.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
