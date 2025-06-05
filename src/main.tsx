@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { Provider } from '@/components/ui/provider';
-import { Routes } from '@generouted/react-router';
+import App from './pages/index';
 
 const root = document.getElementById('root');
 
@@ -9,7 +9,7 @@ if (!root) {
 }
 
 createRoot(root).render(
-  <Provider defaultTheme='light' enableSystem={false}>
-    <Routes />
+  <Provider defaultTheme="light" enableSystem={false}>
+    <App />
   </Provider>
 );

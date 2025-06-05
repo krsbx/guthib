@@ -42,7 +42,6 @@ cp .env.example .env
 - [Chakra UI](https://chakra-ui.com/)
 - [Zod](https://zod.dev/)
 - [React Hook Form](https://react-hook-form.com/)
-- [Generouted](https://github.com/brunocvcunha/generouted)
 
 # Design Decisions
 
