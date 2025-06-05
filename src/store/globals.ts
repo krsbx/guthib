@@ -4,6 +4,17 @@ export interface UseGlobalStore {
   isSearching: boolean;
   setIsSearching: (isSearching: boolean | ((prev: boolean) => boolean)) => void;
 
+  isInspecting: boolean;
+  setIsInspecting: (
+    isInspecting: boolean | ((prev: boolean) => boolean)
+  ) => void;
+
+  inspecting: string;
+  setInspecting: (inspecting: string | ((prev: string) => string)) => void;
+
+  isFetching: boolean;
+  setIsFetching: (isFetching: boolean | ((prev: boolean) => boolean)) => void;
+
   isError: boolean;
   setIsError: (isError: boolean | ((prev: boolean) => boolean)) => void;
 
@@ -22,6 +33,40 @@ export const useGlobalStore = create<UseGlobalStore>((set) => ({
           : isSearching,
     }));
   },
+
+  isInspecting: false,
+  setIsInspecting(isInspecting: boolean | ((prev: boolean) => boolean)) {
+    set((prev) => ({
+      ...prev,
+      isInspecting:
+        typeof isInspecting === 'function'
+          ? isInspecting(prev.isInspecting)
+          : isInspecting,
+    }));
+  },
+
+  inspecting: '',
+  setInspecting(inspecting: string | ((prev: string) => string)) {
+    set((prev) => ({
+      ...prev,
+      inspecting:
+        typeof inspecting === 'function'
+          ? inspecting(prev.inspecting)
+          : inspecting,
+    }));
+  },
+
+  isFetching: false,
+  setIsFetching(isFetching: boolean | ((prev: boolean) => boolean)) {
+    set((prev) => ({
+      ...prev,
+      isFetching:
+        typeof isFetching === 'function'
+          ? isFetching(prev.isFetching)
+          : isFetching,
+    }));
+  },
+
   isError: false,
   setIsError(isError: boolean | ((prev: boolean) => boolean)) {
     set((prev) => ({
@@ -29,6 +74,7 @@ export const useGlobalStore = create<UseGlobalStore>((set) => ({
       isError: typeof isError === 'function' ? isError(prev.isError) : isError,
     }));
   },
+
   error: '',
   setError(error: string | ((prev: string) => string)) {
     set((prev) => ({

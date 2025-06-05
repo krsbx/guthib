@@ -1,4 +1,5 @@
 import FilterDrawer from '@/components/filters/drawer';
+import InspectionModal from '@/components/inspection/modal';
 import SearchContainer from '@/components/search/container';
 import SearchError from '@/components/search/error';
 import SearchInput from '@/components/search/input';
@@ -11,6 +12,7 @@ function App() {
       <SearchError />
       <SearchInput />
       <SearchContainer />
+      <InspectionModal />
     </Stack>
   );
 }

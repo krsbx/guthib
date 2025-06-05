@@ -2,7 +2,7 @@ import { OrderBy, SortBy } from '@/utils/constants';
 import type { Github } from '@/utils/github';
 import { create } from 'zustand';
 
-type Users = Required<
+export type Users = Required<
   Awaited<ReturnType<typeof Github.findUsers>>
 >['data']['items'];
 

@@ -1,25 +1,38 @@
 import { useGlobalStore } from '@/store/globals';
 import { useSearchStore } from '@/store/search';
 import {
-  Avatar,
   Button,
   SimpleGrid,
-  Stack,
-  Text,
   SkeletonCircle,
   SkeletonText,
+  Stack,
+  Text,
 } from '@chakra-ui/react';
+import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
+import GithubProfile from '../cards/profile';
 
 function SearchContainer() {
-  const { isFetching } = useGlobalStore(
-    useShallow((state) => ({ isFetching: state.isSearching }))
+  const { isFetching, setInspecting, setIsInspecting } = useGlobalStore(
+    useShallow((state) => ({
+      isFetching: state.isSearching,
+      setInspecting: state.setInspecting,
+      setIsInspecting: state.setIsInspecting,
+    }))
   );
   const { username, users } = useSearchStore(
     useShallow((state) => ({
       username: state.username,
       users: state.users,
     }))
+  );
+
+  const onClick = useCallback(
+    (username: string) => () => {
+      setInspecting(username);
+      setIsInspecting(true);
+    },
+    [setInspecting, setIsInspecting]
   );
 
   if (isFetching) {
@@ -56,25 +69,9 @@ function SearchContainer() {
             h={'full'}
             justifyContent={'flex-start'}
             p={3}
+            onClick={onClick(user.login)}
           >
-            <Stack gap={4} direction={'row'}>
-              <Avatar.Root>
-                <Avatar.Fallback name={user.name || user.login} />
-                <Avatar.Image src={user.avatar_url} />
-              </Avatar.Root>
-              <Stack gap={2} flex={1} justifyContent={'center'}>
-                {user.name && <Text fontSize={'sm'}>{user.name}</Text>}
-                <Text fontWeight={'bold'} fontSize={'md'}>
-                  {user.login}
-                </Text>
-                {user.followers && (
-                  <Text fontSize={'sm'}>{user.followers}</Text>
-                )}
-                {user.following && (
-                  <Text fontSize={'sm'}>{user.following}</Text>
-                )}
-              </Stack>
-            </Stack>
+            <GithubProfile user={user} />
           </Button>
         ))}
       </SimpleGrid>
