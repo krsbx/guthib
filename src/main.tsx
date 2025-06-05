@@ -9,7 +9,7 @@ if (!root) {
 }
 
 createRoot(root).render(
-  <Provider>
+  <Provider defaultTheme='light' enableSystem={false}>
     <Routes />
   </Provider>
 );
