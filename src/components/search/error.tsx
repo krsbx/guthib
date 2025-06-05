@@ -1,13 +1,20 @@
-import { useSearchStore } from '@/store/search';
+import { useGlobalStore } from '@/store/globals';
 import { Button, CloseButton, Dialog, Text } from '@chakra-ui/react';
+import { useShallow } from 'zustand/shallow';
 
 function SearchError() {
-  const { isSearchError, setIsSearchError, searchError } = useSearchStore();
+  const { isError, setIsError, error } = useGlobalStore(
+    useShallow((state) => ({
+      isError: state.isError,
+      setIsError: state.setIsError,
+      error: state.error,
+    }))
+  );
 
   return (
     <Dialog.Root
-      open={isSearchError}
-      onOpenChange={(e) => setIsSearchError(e.open)}
+      open={isError}
+      onOpenChange={(e) => setIsError(e.open)}
       closeOnEscape
       closeOnInteractOutside
       placement={'center'}
@@ -19,7 +26,7 @@ function SearchError() {
             <Dialog.Title>Error</Dialog.Title>
           </Dialog.Header>
           <Dialog.Body>
-            <Text>{searchError}</Text>
+            <Text>{error}</Text>
           </Dialog.Body>
           <Dialog.Footer>
             <Dialog.ActionTrigger asChild>

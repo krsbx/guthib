@@ -24,15 +24,8 @@ export interface UseSearchStore {
     value: UseSearchStore['filters'][T]
   ) => void;
 
-  isSearching: boolean;
-  setIsSearching: (isSearching: boolean | ((prev: boolean) => boolean)) => void;
-  isSearchError: boolean;
-  setIsSearchError: (
-    isSearchError: boolean | ((prev: boolean) => boolean)
-  ) => void;
-
-  searchError: string;
-  setSearchError: (searchError: string | ((prev: string) => string)) => void;
+  username: string;
+  setUsername: (username: string | ((prev: string) => string)) => void;
 
   users: Users;
   setUsers: (users: Users) => void;
@@ -86,36 +79,12 @@ export const useSearchStore = create<UseSearchStore>((set) => ({
     }));
   },
 
-  isSearching: false,
-  setIsSearching(isSearching: boolean | ((prev: boolean) => boolean)) {
+  username: '',
+  setUsername(username: string | ((prev: string) => string)) {
     set((prev) => ({
       ...prev,
-      isSearching:
-        typeof isSearching === 'function'
-          ? isSearching(prev.isSearching)
-          : isSearching,
-    }));
-  },
-
-  isSearchError: false,
-  setIsSearchError(isSearchError: boolean | ((prev: boolean) => boolean)) {
-    set((prev) => ({
-      ...prev,
-      isSearchError:
-        typeof isSearchError === 'function'
-          ? isSearchError(prev.isSearchError)
-          : isSearchError,
-    }));
-  },
-
-  searchError: '',
-  setSearchError(searchError: string | ((prev: string) => string)) {
-    set((prev) => ({
-      ...prev,
-      searchError:
-        typeof searchError === 'function'
-          ? searchError(prev.searchError)
-          : searchError,
+      username:
+        typeof username === 'function' ? username(prev.username) : username,
     }));
   },
 

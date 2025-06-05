@@ -9,18 +9,28 @@ import { FaFilter, FaSearch } from 'react-icons/fa';
 import { Form } from '../ui/form';
 import { SortBy } from '@/utils/constants';
 import { RequestError } from 'octokit';
+import { useShallow } from 'zustand/shallow';
+import { useGlobalStore } from '@/store/globals';
 
 function SearchInput() {
-  const {
-    isFilterOpen,
-    toggleFilter,
-    isSearching,
-    setIsSearching,
-    filters,
-    setUsers,
-    setIsSearchError,
-    setSearchError,
-  } = useSearchStore();
+  const { isFetching, setIsFetching, setError, setIsError } = useGlobalStore(
+    useShallow((state) => ({
+      isFetching: state.isSearching,
+      setIsFetching: state.setIsSearching,
+      setIsError: state.setIsError,
+      setError: state.setError,
+    }))
+  );
+  const { isFiltering, toggleFilter, filters, setUsers, setUsername } =
+    useSearchStore(
+      useShallow((state) => ({
+        isFiltering: state.isFilterOpen,
+        toggleFilter: state.toggleFilter,
+        filters: state.filters,
+        setUsers: state.setUsers,
+        setUsername: state.setUsername,
+      }))
+    );
   const { register, handleSubmit, formState } = useForm<SearchSchema>({
     defaultValues: {
       username: '',
@@ -32,9 +42,9 @@ function SearchInput() {
   const onSubmit = useCallback(
     async (values: SearchSchema) => {
       // Prevent multiple requests
-      if (isSearching) return;
+      if (isFetching) return;
 
-      setIsSearching(true);
+      setIsFetching(true);
 
       const response = await Github.findUsers(values.username, {
         order: filters.orderBy,
@@ -44,28 +54,33 @@ function SearchInput() {
       });
 
       if (response.isSuccess) {
+        setUsername(values.username);
         setUsers(response.data.items);
       } else {
-        setIsSearchError(true);
+        setIsError(true);
 
         if (response.error instanceof RequestError) {
-          setSearchError(response.error.message);
+          setError(response.error.message);
         } else if (response.error instanceof Error) {
-          setSearchError(response.error.message);
+          setError(response.error.message);
         } else {
-          setSearchError('Something went wrong');
+          setError('Something went wrong');
         }
       }
 
-      setIsSearching(false);
+      setIsFetching(false);
     },
     [
-      isSearching,
-      setIsSearching,
-      filters,
+      isFetching,
+      setIsFetching,
+      filters.orderBy,
+      filters.page,
+      filters.maxPerPage,
+      filters.sortBy,
+      setUsername,
       setUsers,
-      setIsSearchError,
-      setSearchError,
+      setIsError,
+      setError,
     ]
   );
 
@@ -85,7 +100,7 @@ function SearchInput() {
           variant={'surface'}
           color={'gray.500'}
           fontWeight={'bold'}
-          bg={isFilterOpen ? 'gray.300' : 'whiteAlpha.300'}
+          bg={isFiltering ? 'gray.300' : 'whiteAlpha.300'}
           type="button"
           px={1}
         >

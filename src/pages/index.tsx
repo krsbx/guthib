@@ -1,4 +1,5 @@
 import FilterDrawer from '@/components/filters/drawer';
+import SearchContainer from '@/components/search/container';
 import SearchError from '@/components/search/error';
 import SearchInput from '@/components/search/input';
 import { Stack } from '@chakra-ui/react';
@@ -9,6 +10,7 @@ function App() {
       <FilterDrawer />
       <SearchError />
       <SearchInput />
+      <SearchContainer />
     </Stack>
   );
 }

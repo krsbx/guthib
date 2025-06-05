@@ -18,12 +18,21 @@ import {
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { useForm } from 'react-hook-form';
 
 function FilterDrawer() {
-  const { isFilterOpen, toggleFilter, filters, resetFilters, setFilter } =
-    useSearchStore();
-  const { register, formState } = useForm({
+  const { isFiltering, toggleFilter, filters, resetFilters, setFilter } =
+    useSearchStore(
+      useShallow((state) => ({
+        isFiltering: state.isFilterOpen,
+        toggleFilter: state.toggleFilter,
+        filters: state.filters,
+        resetFilters: state.resetFilters,
+        setFilter: state.setFilter,
+      }))
+    );
+  const { register, formState, getValues } = useForm({
     defaultValues: {
       maxPerPage: filters.maxPerPage.toString(),
     },
@@ -36,9 +45,20 @@ function FilterDrawer() {
     toggleFilter();
   }, [resetFilters, toggleFilter]);
 
+  const onSave = useCallback(() => {
+    const currentMaxPerPage = filters.maxPerPage;
+    const newMaxPerPage = parseInt(getValues('maxPerPage'), 10);
+
+    if (!Number.isNaN(newMaxPerPage) && currentMaxPerPage !== newMaxPerPage) {
+      setFilter('maxPerPage', newMaxPerPage);
+    }
+
+    toggleFilter();
+  }, [filters.maxPerPage, getValues, setFilter, toggleFilter]);
+
   return (
     <Drawer.Root
-      open={isFilterOpen}
+      open={isFiltering}
       closeOnEscape
       closeOnInteractOutside
       onOpenChange={toggleFilter}
@@ -127,7 +147,9 @@ function FilterDrawer() {
             <Button variant="outline" type="button" onClick={onCancel}>
               Cancel
             </Button>
-            <Button type="button">Save</Button>
+            <Button type="button" onClick={onSave}>
+              Save
+            </Button>
           </Drawer.Footer>
           <Drawer.CloseTrigger asChild>
             <CloseButton size="sm" />
