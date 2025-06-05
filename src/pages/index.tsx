@@ -7,7 +7,7 @@ import { Stack } from '@chakra-ui/react';
 
 function App() {
   return (
-    <Stack p={4} bg={'gray.100'} w={'vw'} h={'vh'}>
+    <Stack p={4} w={'vw'} h={'vh'}>
       <FilterDrawer />
       <SearchError />
       <SearchInput />
