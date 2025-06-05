@@ -20,7 +20,6 @@ export const userA: User = {
   starred_url: '',
   events_url: '',
   site_admin: false,
-  starred_at: '',
   user_view_type: undefined,
 };
 

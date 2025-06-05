@@ -43,6 +43,20 @@ cp .env.example .env
 
 5. Open [http://localhost:5173](http://localhost:5173)
 
+## Running tests
+
+### Unit tests
+
+```bash
+> pnpm run test
+```
+
+### Coverage
+
+```bash
+> pnpm run test:coverage
+```
+
 # Tech Stack
 
 - [Vite](https://vitejs.dev/)
@@ -50,6 +64,7 @@ cp .env.example .env
 - [Chakra UI](https://chakra-ui.com/)
 - [Zod](https://zod.dev/)
 - [React Hook Form](https://react-hook-form.com/)
+- [Vitest](https://vitest.dev/)
 
 # Design Decisions
 
