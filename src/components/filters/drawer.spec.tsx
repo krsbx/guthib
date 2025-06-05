@@ -45,6 +45,7 @@ describe('FilterDrawer', () => {
 
   it('calls setFilter when changing sortBy and orderBy', async () => {
     const setFilter = vi.fn();
+    
     useSearchStore.setState({ setFilter });
 
     render(
@@ -114,6 +115,7 @@ describe('FilterDrawer', () => {
   it('calls setFilter and closes drawer on save if maxPerPage changed', () => {
     const setFilter = vi.fn();
     const toggleFilter = vi.fn();
+    
     useSearchStore.setState({
       setFilter,
       toggleFilter,

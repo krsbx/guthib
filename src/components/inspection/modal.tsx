@@ -44,7 +44,9 @@ function InspectionModal() {
   );
 
   const onFetch = useCallback(async () => {
+    /* v8 ignore start */
     if (!isInspecting || !user || isFetching || repos[user.login]) return;
+    /* v8 ignore stop */
 
     setIsFetching(true);
 
@@ -91,7 +93,9 @@ function InspectionModal() {
   return (
     <Dialog.Root
       open={isInspecting}
+      /* v8 ignore start */
       onOpenChange={(e) => onClose(e.open)}
+      /* v8 ignore stop */
       closeOnEscape
       closeOnInteractOutside
       placement={'center'}

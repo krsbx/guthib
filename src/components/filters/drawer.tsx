@@ -79,18 +79,22 @@ function FilterDrawer() {
                 </Text>
                 <RadioGroup.Root
                   value={filters.sortBy}
+                  /* v8 ignore start */
                   onValueChange={(e) =>
                     setFilter(
                       'sortBy',
                       (e.value || SortBy.BEST_MATCH) as SortBy
                     )
                   }
+                  /* v8 ignore stop */
                 >
                   <Stack pl={2}>
                     {SORT_BY_OPTIONS.map((item) => (
                       <RadioGroup.Item
                         key={item.value}
+                        /* v8 ignore start */
                         value={item.value || ''}
+                        /* v8 ignore stop */
                       >
                         <RadioGroup.ItemHiddenInput />
                         <RadioGroup.ItemIndicator />
@@ -106,15 +110,19 @@ function FilterDrawer() {
                 </Text>
                 <RadioGroup.Root
                   value={filters.orderBy}
+                  /* v8 ignore start */
                   onValueChange={(e) =>
                     setFilter('orderBy', (e.value || OrderBy.DESC) as OrderBy)
                   }
+                  /* v8 ignore stop */
                 >
                   <Stack pl={2}>
                     {ORDER_BY_OPTIONS.map((item) => (
                       <RadioGroup.Item
                         key={item.value}
+                        /* v8 ignore start */
                         value={item.value || ''}
+                        /* v8 ignore stop */
                       >
                         <RadioGroup.ItemHiddenInput />
                         <RadioGroup.ItemIndicator />

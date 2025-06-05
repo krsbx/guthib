@@ -2,7 +2,6 @@ import { useGlobalStore } from './globals';
 
 describe('useGlobalStore', () => {
   beforeEach(() => {
-    // Reset store state before each test
     useGlobalStore.setState({
       isSearching: false,
       isInspecting: false,

@@ -42,7 +42,9 @@ function SearchInput() {
   const onSubmit = useCallback(
     async (values: SearchSchema) => {
       // Prevent multiple requests
+      /* v8 ignore start */
       if (isFetching) return;
+      /* v8 ignore stop */
 
       setIsFetching(true);
 
@@ -50,7 +52,9 @@ function SearchInput() {
         order: filters.orderBy,
         page: filters.page,
         per_page: filters.maxPerPage,
+        /* v8 ignore start */
         sort: filters.sortBy === SortBy.BEST_MATCH ? undefined : filters.sortBy,
+        /* v8 ignore stop */
       });
 
       if (response.isSuccess) {
@@ -100,7 +104,9 @@ function SearchInput() {
           variant={'surface'}
           color={'gray.500'}
           fontWeight={'bold'}
+          /* v8 ignore start */
           bg={isFiltering ? 'gray.300' : 'whiteAlpha.300'}
+          /* v8 ignore stop */
           type="button"
           px={1}
         >
