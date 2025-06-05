@@ -48,7 +48,10 @@ function InspectionModal() {
 
     setIsFetching(true);
 
-    const response = await Github.listRepos(user.login);
+    const response = await Github.listRepos(user.login, {
+      sort: 'pushed',
+      type: 'all',
+    });
 
     if (response.isSuccess) {
       addRepos(user.login, response.data);
@@ -80,7 +83,7 @@ function InspectionModal() {
   ]);
 
   useEffect(() => {
-    onFetch();
+    void onFetch();
   }, [onFetch]);
 
   if (!user) return null;

@@ -26,6 +26,14 @@ cp .env.example .env
 ```
 
 > Chnage `VITE_GITHUB_TOKEN` on the `.env` file to your Github token, you can generate one [here](https://github.com/settings/tokens)
+> The `VITE_GITHUB_TOKEN` is only used in development mode, if you want to use it in production change the `Github` object initiation process in `src/utils/github/index.ts`
+
+```diff
+// Only use `import.meta.env.VITE_GITHUB_TOKEN` if we're in development
+// Change this to true if you want to use it in production or just change the `import.meta.env.DEV` to `import.meta.env.PROD`
+- const conditionalToken = import.meta.env.DEV;
++ const conditionalToken = true;
+```
 
 4. Run the app
 

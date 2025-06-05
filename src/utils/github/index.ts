@@ -2,6 +2,10 @@ import { Octokit } from 'octokit';
 import { requestWrapper } from '../request';
 import type { ListUserReposOptions, SearchUsernameOptions } from './types';
 
+// Only use `import.meta.env.VITE_GITHUB_TOKEN` if we're in development
+// Change this to true if you want to use it in production or just change the `import.meta.env.DEV` to `import.meta.env.PROD`
+const conditionalToken = import.meta.env.DEV;
+
 export class Github {
   private _octokit: Octokit;
   private _request: Octokit['request'];
@@ -21,9 +25,13 @@ export class Github {
 
   public static get instance(): Github {
     if (!Github._instance) {
-      Github._instance = new Github(
-        import.meta.env.VITE_GITHUB_TOKEN as string
-      );
+      let token = '';
+
+      if (conditionalToken) {
+        token = import.meta.env.VITE_GITHUB_TOKEN;
+      }
+
+      Github._instance = new Github(token);
     }
 
     return Github._instance;
