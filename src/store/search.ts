@@ -6,6 +6,8 @@ export type Users = Required<
   Awaited<ReturnType<typeof Github.findUsers>>
 >['data']['items'];
 
+export type User = User[number];
+
 export interface UseSearchStore {
   isFilterOpen: boolean;
   toggleFilter: () => void;
