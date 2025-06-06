@@ -10,9 +10,10 @@ Enter a GitHub username to explore their public profile and repositories. The ap
 
 ## 📸 Screenshots
 
-| Desktop | Mobile |
-|--------|--------|
-| ![desktop](screenshots/desktop.png) | ![mobile](screenshots/mobile.png) |
+| Desktop                                      | Mobile                                      |
+| -------------------------------------------- | ------------------------------------------- |
+| ![light-mode](screenshots/desktop/light.png) | ![light-mode](screenshots/mobile/light.png) |
+| ![dark-mode](screenshots/desktop/dark.png)   | ![dark-mode](screenshots/mobile/dark.png)   |
 
 ---
 
@@ -94,9 +95,11 @@ pnpm run test:coverage
 ## 🧠 Design Decisions
 
 ### Efficient API Usage
+
 - Repository data is fetched **on demand** (when a user card is expanded) to reduce API usage and improve initial load time.
 
 ### UX & Accessibility
+
 - Used **Chakra UI** for consistent design, responsive layout, and built-in accessibility.
 - Implemented a **filter drawer** to help users quickly narrow down repositories.
 
@@ -104,15 +107,15 @@ pnpm run test:coverage
 
 ## 🧰 Tech Stack
 
-| Tool              | Purpose                        |
-|-------------------|--------------------------------|
-| React             | UI Library                     |
-| TypeScript        | Static typing                  |
-| Vite              | Lightning-fast build tool      |
-| Chakra UI         | Styling & layout               |
-| React Hook Form   | Form state management          |
-| Zod               | Validation schema              |
-| Vitest            | Unit & integration testing     |
+| Tool            | Purpose                    |
+| --------------- | -------------------------- |
+| React           | UI Library                 |
+| TypeScript      | Static typing              |
+| Vite            | Lightning-fast build tool  |
+| Chakra UI       | Styling & layout           |
+| React Hook Form | Form state management      |
+| Zod             | Validation schema          |
+| Vitest          | Unit & integration testing |
 
 ---
 
@@ -131,6 +134,7 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🚧 Future Improvements
 
 If more time were available, I would consider:
+
 - Adding pagination for repositories
 - Supporting infinite scrolling for better UX
 - Improving accessibility scores using Lighthouse
