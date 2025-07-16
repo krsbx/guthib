@@ -1,13 +1,13 @@
 import { useGlobalStore } from '@/store/globals';
 import { useReposStore } from '@/store/repos';
 import { useSearchStore } from '@/store/search';
-import { Github } from '@/utils/github';
-import { Button, CloseButton, Dialog, Stack } from '@chakra-ui/react';
-import { RequestError } from 'octokit';
-import { useCallback, useEffect, useMemo } from 'react';
+import { Button, CloseButton, Dialog, Flex, Stack } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import GithubProfile from '../cards/profile';
 import GithubRepo from '../cards/repo';
 import GithubRepoSkeleton from '../cards/repo-skeleton';
+import { useGithub } from '@/hooks/useGithub/index';
+import { useShallow } from 'zustand/shallow';
 
 function InspectionModal() {
   const {
@@ -16,12 +16,26 @@ function InspectionModal() {
     setIsInspecting,
     setInspecting,
     isFetching,
-    setIsFetching,
-    setError,
-    setIsError,
-  } = useGlobalStore();
-  const { repos, addRepos } = useReposStore();
-  const { users } = useSearchStore();
+  } = useGlobalStore(
+    useShallow((state) => ({
+      inspecting: state.inspecting,
+      isInspecting: state.isInspecting,
+      setIsInspecting: state.setIsInspecting,
+      setInspecting: state.setInspecting,
+      isFetching: state.isFetching,
+    }))
+  );
+  const { listUserRepos } = useGithub();
+  const { repos, filters, setFilter } = useReposStore(
+    useShallow((state) => ({
+      repos: state.repos,
+      filters: state.filters,
+      setFilter: state.setFilter,
+    }))
+  );
+  const { users } = useSearchStore(
+    useShallow((state) => ({ users: state.users }))
+  );
   const user = useMemo(
     () => users.find((u) => u.login === inspecting),
     [users, inspecting]
@@ -34,54 +48,69 @@ function InspectionModal() {
 
   const onClose = useCallback(
     (isOpen: boolean) => {
+      setFilter('page', 1);
       setIsInspecting(isOpen);
 
       if (!isOpen) {
         setInspecting('');
       }
     },
-    [setIsInspecting, setInspecting]
+    [setFilter, setIsInspecting, setInspecting]
   );
+
+  const onLoadMore = useCallback(async () => {
+    if (!isInspecting || !user || isFetching || !repos[user.login]) return;
+
+    // Update filters
+    setFilter('page', filters.page + 1);
+
+    await listUserRepos({
+      username: user.login,
+      filters: {
+        ...filters,
+        page: 1,
+      },
+      managed: true,
+    });
+  }, [
+    filters,
+    isFetching,
+    isInspecting,
+    listUserRepos,
+    repos,
+    setFilter,
+    user,
+  ]);
 
   const onFetch = useCallback(async () => {
     /* v8 ignore start */
     if (!isInspecting || !user || isFetching || repos[user.login]) return;
     /* v8 ignore stop */
 
-    setIsFetching(true);
+    // Set the page to 1
+    setFilter('page', 1);
 
-    const response = await Github.listRepos(user.login, {
-      sort: 'pushed',
-      type: 'all',
+    const response = await listUserRepos({
+      username: user.login,
+      filters: {
+        ...filters,
+        page: 1,
+      },
+      managed: true,
     });
 
-    if (response.isSuccess) {
-      addRepos(user.login, response.data);
-    } else {
-      setIsError(true);
-
-      if (response.error instanceof RequestError) {
-        setError(response.error.message);
-      } else if (response.error instanceof Error) {
-        setError(response.error.message);
-      } else {
-        setError('Something went wrong');
-      }
-
+    if (!response.isSuccess) {
       onClose(false);
     }
-
-    setIsFetching(false);
   }, [
     isInspecting,
     user,
     isFetching,
     repos,
-    setIsFetching,
+    setFilter,
+    listUserRepos,
+    filters,
     onClose,
-    addRepos,
-    setIsError,
-    setError,
   ]);
 
   useEffect(() => {
@@ -111,9 +140,18 @@ function InspectionModal() {
               {isFetching ? (
                 <GithubRepoSkeleton />
               ) : (
-                userRepos.map((repo) => (
-                  <GithubRepo repo={repo} key={repo.id} />
-                ))
+                <React.Fragment>
+                  {userRepos.map((repo) => (
+                    <GithubRepo repo={repo} key={repo.id} />
+                  ))}
+                  {userRepos.length && (
+                    <Flex w={'full'} justifyContent={'center'} pt={2}>
+                      <Button onClick={onLoadMore} size={'xs'}>
+                        Load More
+                      </Button>
+                    </Flex>
+                  )}
+                </React.Fragment>
               )}
             </Stack>
           </Dialog.Body>

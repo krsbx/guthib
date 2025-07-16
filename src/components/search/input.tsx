@@ -1,36 +1,30 @@
+import { useGithub } from '@/hooks/useGithub/index';
+import { useGlobalStore } from '@/store/globals';
 import { useSearchStore } from '@/store/search';
-import { Github } from '@/utils/github';
 import { searchSchema, type SearchSchema } from '@/utils/validations';
 import { Button, Field, Icon, Input, Stack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaFilter, FaMoon, FaSearch } from 'react-icons/fa';
-import { Form } from '../ui/form';
-import { SortBy } from '@/utils/constants';
-import { RequestError } from 'octokit';
-import { useShallow } from 'zustand/shallow';
-import { useGlobalStore } from '@/store/globals';
-import { useColorMode } from '../ui/color-mode';
 import { MdOutlineWbSunny } from 'react-icons/md';
+import { useShallow } from 'zustand/shallow';
+import { useColorMode } from '../ui/color-mode';
+import { Form } from '../ui/form';
 
 function SearchInput() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isFetching, setIsFetching, setError, setIsError } = useGlobalStore(
+  const { searchByUsernames } = useGithub();
+  const { isFetching } = useGlobalStore(
     useShallow((state) => ({
       isFetching: state.isSearching,
-      setIsFetching: state.setIsSearching,
-      setIsError: state.setIsError,
-      setError: state.setError,
     }))
   );
-  const { toggleFilter, filters, setUsers, setUsername } = useSearchStore(
+  const { toggleFilter, filters, setFilter } = useSearchStore(
     useShallow((state) => ({
-      isFiltering: state.isFilterOpen,
       toggleFilter: state.toggleFilter,
       filters: state.filters,
-      setUsers: state.setUsers,
-      setUsername: state.setUsername,
+      setFilter: state.setFilter,
     }))
   );
   const { register, handleSubmit, formState } = useForm<SearchSchema>({
@@ -48,46 +42,20 @@ function SearchInput() {
       if (isFetching) return;
       /* v8 ignore stop */
 
-      setIsFetching(true);
+      // Set the page to 1
+      setFilter('page', 1);
 
-      const response = await Github.findUsers(values.username, {
-        order: filters.orderBy,
-        page: filters.page,
-        per_page: filters.maxPerPage,
-        /* v8 ignore start */
-        sort: filters.sortBy === SortBy.BEST_MATCH ? undefined : filters.sortBy,
-        /* v8 ignore stop */
+      await searchByUsernames({
+        username: values.username,
+        filters: {
+          ...filters,
+          page: 1,
+        },
+        append: false,
+        managed: true,
       });
-
-      if (response.isSuccess) {
-        setUsername(values.username);
-        setUsers(response.data.items);
-      } else {
-        setIsError(true);
-
-        if (response.error instanceof RequestError) {
-          setError(response.error.message);
-        } else if (response.error instanceof Error) {
-          setError(response.error.message);
-        } else {
-          setError('Something went wrong');
-        }
-      }
-
-      setIsFetching(false);
     },
-    [
-      isFetching,
-      setIsFetching,
-      filters.orderBy,
-      filters.page,
-      filters.maxPerPage,
-      filters.sortBy,
-      setUsername,
-      setUsers,
-      setIsError,
-      setError,
-    ]
+    [isFetching, searchByUsernames, filters, setFilter]
   );
 
   return (

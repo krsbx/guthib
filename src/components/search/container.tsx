@@ -2,6 +2,7 @@ import { useGlobalStore } from '@/store/globals';
 import { useSearchStore } from '@/store/search';
 import {
   Button,
+  Flex,
   SimpleGrid,
   SkeletonCircle,
   SkeletonText,
@@ -11,6 +12,7 @@ import {
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
 import GithubProfile from '../cards/profile';
+import { useGithub } from '@/hooks/useGithub/index';
 
 function SearchContainer() {
   const { isFetching, setInspecting, setIsInspecting } = useGlobalStore(
@@ -20,12 +22,32 @@ function SearchContainer() {
       setIsInspecting: state.setIsInspecting,
     }))
   );
-  const { username, users } = useSearchStore(
+  const { searchByUsernames } = useGithub();
+  const { username, users, filters, setFilter } = useSearchStore(
     useShallow((state) => ({
       username: state.username,
       users: state.users,
+      filters: state.filters,
+      setFilter: state.setFilter,
     }))
   );
+
+  const onLoadMore = useCallback(async () => {
+    if (!username || isFetching) return;
+
+    // Update filters
+    setFilter('page', filters.page + 1);
+
+    await searchByUsernames({
+      username,
+      filters: {
+        ...filters,
+        page: filters.page + 1,
+      },
+      append: true,
+      managed: true,
+    });
+  }, [username, isFetching, setFilter, filters, searchByUsernames]);
 
   const onClick = useCallback(
     (username: string) => () => {
@@ -75,6 +97,11 @@ function SearchContainer() {
           </Button>
         ))}
       </SimpleGrid>
+      {users.length && (
+        <Flex w={'full'} justifyContent={'center'} pt={4}>
+          <Button onClick={onLoadMore} size={'sm'}>Load More</Button>
+        </Flex>
+      )}
     </Stack>
   );
 }
