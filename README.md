@@ -136,6 +136,7 @@ This project is open source and available under the [MIT License](LICENSE).
 If more time were available, I would consider:
 
 - Adding pagination for repositories
-- Supporting infinite scrolling for better UX
+- ~~Supporting infinite scrolling for better UX~~
 - Improving accessibility scores using Lighthouse
+- Fix the broken unit test (some of them are failing because of a features being added/removed)
 - Adding CI/CD for automated testing and deploys via GitHub Actions

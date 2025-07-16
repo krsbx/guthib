@@ -15,14 +15,14 @@ import { Form } from '../ui/form';
 function SearchInput() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { searchByUsernames } = useGithub();
-  const { isFetching } = useGlobalStore(
+  const { isFetching, toggleFilter } = useGlobalStore(
     useShallow((state) => ({
       isFetching: state.isSearching,
+      toggleFilter: state.toggleFilter,
     }))
   );
-  const { toggleFilter, filters, setFilter } = useSearchStore(
+  const { filters, setFilter } = useSearchStore(
     useShallow((state) => ({
-      toggleFilter: state.toggleFilter,
       filters: state.filters,
       setFilter: state.setFilter,
     }))

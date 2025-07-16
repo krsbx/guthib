@@ -2,6 +2,8 @@ import { useSearchStore } from '@/store/search';
 import {
   ORDER_BY_OPTIONS,
   OrderBy,
+  REPO_TYPE_OPTIONS,
+  RepoType,
   SORT_BY_OPTIONS,
   SortBy,
 } from '@/utils/constants';
@@ -21,42 +23,63 @@ import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useForm } from 'react-hook-form';
 import { useColorMode } from '../ui/color-mode';
+import { useGlobalStore } from '@/store/globals';
+import { useReposStore } from '@/store/repos';
 
 function FilterDrawer() {
   const { colorMode } = useColorMode();
-  const { isFiltering, toggleFilter, filters, resetFilters, setFilter } =
-    useSearchStore(
-      useShallow((state) => ({
-        isFiltering: state.isFilterOpen,
-        toggleFilter: state.toggleFilter,
-        filters: state.filters,
-        resetFilters: state.resetFilters,
-        setFilter: state.setFilter,
-      }))
-    );
+  const { isFiltering, toggleFilter } = useGlobalStore(
+    useShallow((state) => ({
+      isFiltering: state.isFilterOpen,
+      toggleFilter: state.toggleFilter,
+    }))
+  );
+  const { userFilters, resetUserFilters, setUserFilter } = useSearchStore(
+    useShallow((state) => ({
+      userFilters: state.filters,
+      resetUserFilters: state.resetFilters,
+      setUserFilter: state.setFilter,
+    }))
+  );
+  const { repoFilters, resetRepoFilters, setRepoFilter } = useReposStore(
+    useShallow((state) => ({
+      repoFilters: state.filters,
+      resetRepoFilters: state.resetFilters,
+      setRepoFilter: state.setFilter,
+    }))
+  );
   const { register, formState, getValues } = useForm({
     defaultValues: {
-      maxPerPage: filters.maxPerPage.toString(),
+      maxPerPage: (userFilters.maxPerPage || repoFilters.maxPerPage).toString(),
     },
     mode: 'onBlur',
     resolver: zodResolver(filterSchema),
   });
 
   const onCancel = useCallback(() => {
-    resetFilters();
+    resetUserFilters();
+    resetRepoFilters();
     toggleFilter();
-  }, [resetFilters, toggleFilter]);
+  }, [resetUserFilters, resetRepoFilters, toggleFilter]);
 
   const onSave = useCallback(() => {
-    const currentMaxPerPage = filters.maxPerPage;
+    const currentMaxPerPage = userFilters.maxPerPage || repoFilters.maxPerPage;
     const newMaxPerPage = parseInt(getValues('maxPerPage'), 10);
 
     if (!Number.isNaN(newMaxPerPage) && currentMaxPerPage !== newMaxPerPage) {
-      setFilter('maxPerPage', newMaxPerPage);
+      setUserFilter('maxPerPage', newMaxPerPage);
+      setRepoFilter('maxPerPage', newMaxPerPage);
     }
 
     toggleFilter();
-  }, [filters.maxPerPage, getValues, setFilter, toggleFilter]);
+  }, [
+    getValues,
+    repoFilters.maxPerPage,
+    setRepoFilter,
+    setUserFilter,
+    toggleFilter,
+    userFilters.maxPerPage,
+  ]);
 
   return (
     <Drawer.Root
@@ -80,10 +103,10 @@ function FilterDrawer() {
                   Sort By
                 </Text>
                 <RadioGroup.Root
-                  value={filters.sortBy}
+                  value={userFilters.sortBy}
                   /* v8 ignore start */
                   onValueChange={(e) =>
-                    setFilter(
+                    setUserFilter(
                       'sortBy',
                       (e.value || SortBy.BEST_MATCH) as SortBy
                     )
@@ -96,7 +119,9 @@ function FilterDrawer() {
                         key={item.value}
                         /* v8 ignore start */
                         value={item.value || ''}
-                        /* v8 ignore stop */
+                        /* v8 ignore stop */ _hover={{
+                          cursor: 'pointer',
+                        }}
                       >
                         <RadioGroup.ItemHiddenInput />
                         <RadioGroup.ItemIndicator />
@@ -108,13 +133,16 @@ function FilterDrawer() {
               </Stack>
               <Stack gap={2}>
                 <Text fontWeight={'bold'} fontSize={'sm'}>
-                  Order By
+                  Order User By
                 </Text>
                 <RadioGroup.Root
-                  value={filters.orderBy}
+                  value={userFilters.orderBy}
                   /* v8 ignore start */
                   onValueChange={(e) =>
-                    setFilter('orderBy', (e.value || OrderBy.DESC) as OrderBy)
+                    setUserFilter(
+                      'orderBy',
+                      (e.value || OrderBy.DESC) as OrderBy
+                    )
                   }
                   /* v8 ignore stop */
                 >
@@ -124,7 +152,40 @@ function FilterDrawer() {
                         key={item.value}
                         /* v8 ignore start */
                         value={item.value || ''}
+                        /* v8 ignore stop */ _hover={{
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <RadioGroup.ItemHiddenInput />
+                        <RadioGroup.ItemIndicator />
+                        <RadioGroup.ItemText>{item.label}</RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                    ))}
+                  </Stack>
+                </RadioGroup.Root>
+              </Stack>
+              <Stack gap={2}>
+                <Text fontWeight={'bold'} fontSize={'sm'}>
+                  User Repository Type
+                </Text>
+                <RadioGroup.Root
+                  value={repoFilters.type}
+                  /* v8 ignore start */
+                  onValueChange={(e) =>
+                    setRepoFilter('type', (e.value || RepoType.ALL) as RepoType)
+                  }
+                  /* v8 ignore stop */
+                >
+                  <Stack pl={2}>
+                    {REPO_TYPE_OPTIONS.map((item) => (
+                      <RadioGroup.Item
+                        key={item.value}
+                        /* v8 ignore start */
+                        value={item.value || ''}
                         /* v8 ignore stop */
+                        _hover={{
+                          cursor: 'pointer',
+                        }}
                       >
                         <RadioGroup.ItemHiddenInput />
                         <RadioGroup.ItemIndicator />

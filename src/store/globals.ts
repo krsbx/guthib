@@ -20,6 +20,11 @@ export interface UseGlobalStore {
 
   error: string;
   setError: (error: string | ((prev: string) => string)) => void;
+
+  isFilterOpen: boolean;
+  toggleFilter: () => void;
+  openFilter: () => void;
+  closeFilter: () => void;
 }
 
 export const useGlobalStore = create<UseGlobalStore>((set) => ({
@@ -80,6 +85,26 @@ export const useGlobalStore = create<UseGlobalStore>((set) => ({
     set((prev) => ({
       ...prev,
       error: typeof error === 'function' ? error(prev.error) : error,
+    }));
+  },
+
+  isFilterOpen: false,
+  toggleFilter() {
+    set((prev) => ({
+      ...prev,
+      isFilterOpen: !prev.isFilterOpen,
+    }));
+  },
+  openFilter() {
+    set((prev) => ({
+      ...prev,
+      isFilterOpen: true,
+    }));
+  },
+  closeFilter() {
+    set((prev) => ({
+      ...prev,
+      isFilterOpen: false,
     }));
   },
 }));

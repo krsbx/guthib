@@ -9,11 +9,6 @@ export type Users = Required<
 export type User = Users[number];
 
 export interface UseSearchStore {
-  isFilterOpen: boolean;
-  toggleFilter: () => void;
-  openFilter: () => void;
-  closeFilter: () => void;
-
   filters: {
     sortBy: SortBy;
     orderBy: OrderBy;
@@ -35,26 +30,6 @@ export interface UseSearchStore {
 }
 
 export const useSearchStore = create<UseSearchStore>((set) => ({
-  isFilterOpen: false,
-  toggleFilter() {
-    set((prev) => ({
-      ...prev,
-      isFilterOpen: !prev.isFilterOpen,
-    }));
-  },
-  openFilter() {
-    set((prev) => ({
-      ...prev,
-      isFilterOpen: true,
-    }));
-  },
-  closeFilter() {
-    set((prev) => ({
-      ...prev,
-      isFilterOpen: false,
-    }));
-  },
-
   filters: {
     sortBy: SortBy.BEST_MATCH,
     orderBy: OrderBy.DESC,
