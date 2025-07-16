@@ -3,15 +3,17 @@ import InspectionModal from '@/components/inspection/modal';
 import SearchContainer from '@/components/search/container';
 import SearchError from '@/components/search/error';
 import SearchInput from '@/components/search/input';
-import { Stack } from '@chakra-ui/react';
+import { Box, Stack } from '@chakra-ui/react';
 
 function App() {
   return (
-    <Stack p={4} w={'vw'} h={'vh'}>
+    <Stack w={'vw'} h={'vh'}>
       <FilterDrawer />
       <SearchError />
       <SearchInput />
-      <SearchContainer />
+      <Box p={4} mt={14} pb={{ base: 10, md: 0 }}>
+        <SearchContainer />
+      </Box>
       <InspectionModal />
     </Stack>
   );

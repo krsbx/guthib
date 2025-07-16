@@ -92,8 +92,12 @@ function SearchInput() {
 
   return (
     <Form
+      pos={'fixed'}
+      w={'vw'}
       onSubmit={handleSubmit(onSubmit)}
+      zIndex={10}
       bg={colorMode === 'light' ? 'white' : 'black'}
+      p={4}
     >
       <Stack direction={'row'}>
         <Field.Root invalid={!!formState.errors?.username?.message}>
