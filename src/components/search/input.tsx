@@ -5,14 +5,17 @@ import { Button, Field, Icon, Input, Stack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaFilter, FaSearch } from 'react-icons/fa';
+import { FaFilter, FaMoon, FaSearch } from 'react-icons/fa';
 import { Form } from '../ui/form';
 import { SortBy } from '@/utils/constants';
 import { RequestError } from 'octokit';
 import { useShallow } from 'zustand/shallow';
 import { useGlobalStore } from '@/store/globals';
+import { useColorMode } from '../ui/color-mode';
+import { MdOutlineWbSunny } from 'react-icons/md';
 
 function SearchInput() {
+  const { colorMode, toggleColorMode } = useColorMode();
   const { isFetching, setIsFetching, setError, setIsError } = useGlobalStore(
     useShallow((state) => ({
       isFetching: state.isSearching,
@@ -88,14 +91,30 @@ function SearchInput() {
   );
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      bg={colorMode === 'light' ? 'white' : 'black'}
+    >
       <Stack direction={'row'}>
         <Field.Root invalid={!!formState.errors?.username?.message}>
-          <Input placeholder="Enter username" {...register('username')} />
+          <Input
+            variant={colorMode === 'light' ? 'outline' : 'subtle'}
+            placeholder="Enter username"
+            {...register('username')}
+          />
           <Field.ErrorText>
             {formState.errors?.username?.message ?? ''}
           </Field.ErrorText>
         </Field.Root>
+        <Button
+          onClick={toggleColorMode}
+          variant={'surface'}
+          fontWeight={'bold'}
+          type="button"
+          px={1}
+        >
+          {colorMode === 'light' ? <MdOutlineWbSunny /> : <FaMoon />}
+        </Button>
         <Button
           onClick={toggleFilter}
           variant={'surface'}

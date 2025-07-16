@@ -20,8 +20,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useForm } from 'react-hook-form';
+import { useColorMode } from '../ui/color-mode';
 
 function FilterDrawer() {
+  const { colorMode } = useColorMode();
   const { isFiltering, toggleFilter, filters, resetFilters, setFilter } =
     useSearchStore(
       useShallow((state) => ({
@@ -138,7 +140,7 @@ function FilterDrawer() {
                 </Text>
                 <Field.Root invalid={!!formState.errors?.maxPerPage?.message}>
                   <Input
-                    variant={'outline'}
+                    variant={colorMode === 'light' ? 'outline' : 'subtle'}
                     placeholder="Enter max items to show"
                     type="number"
                     {...register('maxPerPage')}
