@@ -25,3 +25,17 @@ export const ORDER_BY_OPTIONS = [
   { value: OrderBy.DESC, label: 'Descending' },
   { value: OrderBy.ASC, label: 'Ascending' },
 ] as const;
+
+export const RepoType = {
+  ALL: 'all',
+  OWNER: 'owner',
+  MEMBER: 'member',
+} as const;
+
+export type RepoType = (typeof RepoType)[keyof typeof RepoType];
+
+export const REPO_TYPE_OPTIONS = [
+  { value: RepoType.ALL, label: 'All' },
+  { value: RepoType.OWNER, label: 'Owner' },
+  { value: RepoType.MEMBER, label: 'Member' },
+] as const;

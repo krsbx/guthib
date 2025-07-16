@@ -31,6 +31,7 @@ export interface UseSearchStore {
 
   users: Users;
   setUsers: (users: Users) => void;
+  addUser: (user: User | Users) => void;
 }
 
 export const useSearchStore = create<UseSearchStore>((set) => ({
@@ -95,6 +96,14 @@ export const useSearchStore = create<UseSearchStore>((set) => ({
     set((prev) => ({
       ...prev,
       users,
+    }));
+  },
+  addUser(user) {
+    const users = Array.isArray(user) ? user : [user];
+
+    set((prev) => ({
+      ...prev,
+      users: [...prev.users, ...users],
     }));
   },
 }));

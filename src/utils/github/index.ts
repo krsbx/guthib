@@ -1,4 +1,4 @@
-import { Octokit } from 'octokit';
+import { Octokit, RequestError } from 'octokit';
 import { requestWrapper } from '../request';
 import type { ListUserReposOptions, SearchUsernameOptions } from './types';
 
@@ -71,5 +71,13 @@ export class Github {
 
       return data;
     });
+  }
+
+  public static getErrorMessage<T>(error: T) {
+    if (error instanceof RequestError || error instanceof Error) {
+      return error.message;
+    }
+
+    return 'Something went wrong';
   }
 }
