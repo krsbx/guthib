@@ -5,6 +5,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { setupMatchMediaMock } from '../../../fixtures/test/match-media-mock';
 import { Provider } from '../ui/provider';
 import FilterDrawer from './drawer';
+import { useGlobalStore } from '@/store/globals';
+import { useReposStore } from '@/store/repos';
 
 beforeAll(() => {
   setupMatchMediaMock();
@@ -12,8 +14,11 @@ beforeAll(() => {
 
 describe('FilterDrawer', () => {
   beforeEach(() => {
-    useSearchStore.setState({
+    useGlobalStore.setState({
       isFilterOpen: true,
+    });
+
+    useSearchStore.setState({
       filters: {
         sortBy: SortBy.BEST_MATCH,
         orderBy: OrderBy.DESC,
@@ -33,8 +38,8 @@ describe('FilterDrawer', () => {
     );
 
     expect(screen.getByText('Filters')).toBeInTheDocument();
-    expect(screen.getByText('Sort By')).toBeInTheDocument();
-    expect(screen.getByText('Order By')).toBeInTheDocument();
+    expect(screen.getByText('Sort User By')).toBeInTheDocument();
+    expect(screen.getByText('Order User By')).toBeInTheDocument();
     expect(screen.getByText('Max Items')).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText('Enter max items to show')
@@ -45,7 +50,7 @@ describe('FilterDrawer', () => {
 
   it('calls setFilter when changing sortBy and orderBy', async () => {
     const setFilter = vi.fn();
-    
+
     useSearchStore.setState({ setFilter });
 
     render(
@@ -54,9 +59,7 @@ describe('FilterDrawer', () => {
       </Provider>
     );
 
-    const sortByRadio = await screen.findByDisplayValue(
-      SortBy.BEST_MATCH
-    );
+    const sortByRadio = await screen.findByDisplayValue(SortBy.BEST_MATCH);
 
     if (!sortByRadio) {
       throw new Error('Sort by radio not found');
@@ -98,7 +101,12 @@ describe('FilterDrawer', () => {
     const resetFilters = vi.fn();
     const toggleFilter = vi.fn();
 
-    useSearchStore.setState({ resetFilters, toggleFilter });
+    useGlobalStore.setState({
+      toggleFilter,
+    });
+
+    useSearchStore.setState({ resetFilters });
+    useReposStore.setState({ resetFilters });
 
     render(
       <Provider>
@@ -115,10 +123,13 @@ describe('FilterDrawer', () => {
   it('calls setFilter and closes drawer on save if maxPerPage changed', () => {
     const setFilter = vi.fn();
     const toggleFilter = vi.fn();
-    
+
+    useGlobalStore.setState({
+      toggleFilter,
+    });
+
     useSearchStore.setState({
       setFilter,
-      toggleFilter,
       filters: {
         sortBy: SortBy.BEST_MATCH,
         orderBy: OrderBy.DESC,

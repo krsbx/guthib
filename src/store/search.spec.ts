@@ -1,12 +1,16 @@
 import { OrderBy, SortBy } from '@/utils/constants';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { sampleUsers } from '../../fixtures/store/search';
+import { useGlobalStore } from './globals';
 import { useSearchStore } from './search';
 
 describe('useSearchStore', () => {
   beforeEach(() => {
-    useSearchStore.setState({
+    useGlobalStore.setState({
       isFilterOpen: false,
+    });
+
+    useSearchStore.setState({
       filters: {
         sortBy: SortBy.BEST_MATCH,
         orderBy: OrderBy.DESC,
@@ -19,17 +23,17 @@ describe('useSearchStore', () => {
   });
 
   it('should toggle, open, and close filter', () => {
-    useSearchStore.getState().toggleFilter();
+    useGlobalStore.getState().toggleFilter();
 
-    expect(useSearchStore.getState().isFilterOpen).toBe(true);
+    expect(useGlobalStore.getState().isFilterOpen).toBe(true);
 
-    useSearchStore.getState().closeFilter();
+    useGlobalStore.getState().closeFilter();
 
-    expect(useSearchStore.getState().isFilterOpen).toBe(false);
+    expect(useGlobalStore.getState().isFilterOpen).toBe(false);
 
-    useSearchStore.getState().openFilter();
+    useGlobalStore.getState().openFilter();
 
-    expect(useSearchStore.getState().isFilterOpen).toBe(true);
+    expect(useGlobalStore.getState().isFilterOpen).toBe(true);
   });
 
   it('should reset and set filters', () => {

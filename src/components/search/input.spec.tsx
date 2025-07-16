@@ -19,6 +19,7 @@ vi.mock('@/utils/github', async () => {
         isSuccess: true,
         data: { items: [userA] },
       }),
+      getErrorMessage: vi.fn().mockResolvedValue('Something went wrong'),
     },
   };
 });
@@ -30,6 +31,8 @@ beforeAll(() => {
 describe('SearchInput', () => {
   beforeEach(() => {
     useGlobalStore.setState({
+      isFilterOpen: false,
+      toggleFilter: vi.fn(),
       isSearching: false,
       setIsSearching: vi.fn(),
       setIsError: vi.fn(),
@@ -37,8 +40,6 @@ describe('SearchInput', () => {
     });
 
     useSearchStore.setState({
-      isFilterOpen: false,
-      toggleFilter: vi.fn(),
       filters: {
         sortBy: SortBy.BEST_MATCH,
         orderBy: 'desc',
@@ -64,7 +65,7 @@ describe('SearchInput', () => {
   it('calls toggleFilter when filter button is clicked', async () => {
     const toggleFilter = vi.fn();
     
-    useSearchStore.setState({ toggleFilter });
+    useGlobalStore.setState({ toggleFilter });
 
     render(
       <Provider>

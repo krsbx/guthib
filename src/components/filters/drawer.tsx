@@ -100,7 +100,7 @@ function FilterDrawer() {
             <Stack pl={2} gap={4}>
               <Stack gap={2}>
                 <Text fontWeight={'bold'} fontSize={'sm'}>
-                  Sort By
+                  Sort User By
                 </Text>
                 <RadioGroup.Root
                   value={userFilters.sortBy}

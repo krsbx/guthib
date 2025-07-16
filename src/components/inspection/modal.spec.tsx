@@ -19,6 +19,7 @@ vi.mock('@/utils/github', async () => {
       listRepos: vi
         .fn()
         .mockResolvedValue({ isSuccess: true, data: sampleRepos }),
+      getErrorMessage: vi.fn().mockResolvedValue('Something went wrong'),
     },
   };
 });
