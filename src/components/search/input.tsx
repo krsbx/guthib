@@ -21,16 +21,15 @@ function SearchInput() {
       setError: state.setError,
     }))
   );
-  const { isFiltering, toggleFilter, filters, setUsers, setUsername } =
-    useSearchStore(
-      useShallow((state) => ({
-        isFiltering: state.isFilterOpen,
-        toggleFilter: state.toggleFilter,
-        filters: state.filters,
-        setUsers: state.setUsers,
-        setUsername: state.setUsername,
-      }))
-    );
+  const { toggleFilter, filters, setUsers, setUsername } = useSearchStore(
+    useShallow((state) => ({
+      isFiltering: state.isFilterOpen,
+      toggleFilter: state.toggleFilter,
+      filters: state.filters,
+      setUsers: state.setUsers,
+      setUsername: state.setUsername,
+    }))
+  );
   const { register, handleSubmit, formState } = useForm<SearchSchema>({
     defaultValues: {
       username: '',
@@ -92,21 +91,15 @@ function SearchInput() {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction={'row'}>
         <Field.Root invalid={!!formState.errors?.username?.message}>
-          <Input
-            variant={'outline'}
-            placeholder="Enter username"
-            {...register('username')}
-          />
-          <Field.ErrorText>Username is required</Field.ErrorText>
+          <Input placeholder="Enter username" {...register('username')} />
+          <Field.ErrorText>
+            {formState.errors?.username?.message ?? ''}
+          </Field.ErrorText>
         </Field.Root>
         <Button
           onClick={toggleFilter}
           variant={'surface'}
-          color={'gray.500'}
           fontWeight={'bold'}
-          /* v8 ignore start */
-          bg={isFiltering ? 'gray.300' : 'whiteAlpha.300'}
-          /* v8 ignore stop */
           type="button"
           px={1}
         >
@@ -114,14 +107,7 @@ function SearchInput() {
             <FaFilter />
           </Icon>
         </Button>
-        <Button
-          variant={'surface'}
-          color={'gray.500'}
-          fontWeight={'bold'}
-          bg={'whiteAlpha.300'}
-          type="submit"
-          px={1}
-        >
+        <Button variant={'surface'} fontWeight={'bold'} type="submit" px={1}>
           <Icon size={'sm'}>
             <FaSearch />
           </Icon>

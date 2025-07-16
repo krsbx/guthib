@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const searchSchema = z.object({
-  username: z.string().min(3),
+  username: z
+    .string({
+      message: 'Username is required',
+    })
+    .min(3, 'Username must be at least 3 characters'),
 });
 
 export type SearchSchema = z.infer<typeof searchSchema>;
